@@ -1,0 +1,22 @@
+<div class="d-flex flex-column w-100 vh-100">
+  <div class="d-flex align-items-center justify-content-center mt-5">
+    <h2>Mars Image Viewer</h2>
+  </div>
+
+  <div class="d-flex flex-column align-items-center text-center">
+    <span>Welcome to the Mars image viewer! Please select a date below to see images from the rover on that day!</span>
+    <div class="d-flex w-100 justify-content-center mt-2">
+      <input type="date" class="form-control w-25 mr-2" (input)="onDateInput($event.target.value)" />
+      <button type="button" class="btn btn-outline-primary" (click)="onGetImages()">Get Images</button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading; else currentlyLoading">
+    <img [src]="imageData" *ngIf="imageData"/>
+  </div>
+
+  <ng-template #currentlyLoading>
+    <h3>Loading...</h3>
+  </ng-template>
+
+</div>
