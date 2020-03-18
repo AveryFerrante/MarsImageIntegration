@@ -1,8 +1,11 @@
-﻿using ImageIntegration.Application.Common.Models;
+﻿using ImageIntegration.Application.Common.Interfaces;
+using ImageIntegration.Application.Common.Models;
 using ImageIntegration.Core.Entities;
-using ImageIntegration.Infrastructure.LocalDiskPersistance;
+using ImageIntegration.Infrastructure;
 using ImageIntegration.Services.NasaApi;
+using ImageIntegration.Services;
 using ImageIntegration.Services.NasaApi.Models;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,12 +17,13 @@ namespace ImageIntegration.ConsoleUI
     {
         static async Task Main(string[] args)
         {
+            var serviceProvider = BuildServiceProvider();
             var request = new GetByEarthDateRequest
             {
                 Date = new DateTime(2015, 6, 3)
             };
             var images = await GetImages(request);
-            await SaveImages(images);
+            await SaveImages(images, serviceProvider);
 
         }
 
@@ -29,9 +33,9 @@ namespace ImageIntegration.ConsoleUI
             return await imageRetriever.GetImagesAsync(request);
         }
 
-        private async static Task SaveImages(IEnumerable<Image> images)
+        private async static Task SaveImages(IEnumerable<Image> images, ServiceProvider services)
         {
-            var imageSaver = new LocalDiskPersistor();
+            var imageSaver = services.GetService<IDiskPersistor>();
             var saveDirectory = GetDirectory();
             await imageSaver.PersistImagesAsync(new PersistImagesRequest { Images = images, Directory = saveDirectory });
         }
@@ -44,6 +48,14 @@ namespace ImageIntegration.ConsoleUI
                 Directory.CreateDirectory(saveDirectory);
             }
             return saveDirectory;
+        }
+
+        private static ServiceProvider BuildServiceProvider()
+        {
+            var serviceProvider = new ServiceCollection()
+                .AddInfrastructure()
+                .AddServices();
+            return serviceProvider.BuildServiceProvider();
         }
     }
 }
