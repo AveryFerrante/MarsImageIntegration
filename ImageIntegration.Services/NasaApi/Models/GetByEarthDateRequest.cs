@@ -1,4 +1,4 @@
-﻿using ImageIntegration.Application.Common.Models;
+﻿using ImageIntegration.Application.Common.Interfaces;
 using System;
 
 namespace ImageIntegration.Services.NasaApi.Models
@@ -7,7 +7,7 @@ namespace ImageIntegration.Services.NasaApi.Models
     {
         public DateTime Date { get; set; }
         public string Camera { get; set; }
-        public override string GetQueryString()
+        public string GetQueryString()
         {
             var queryString = $"earth_date={Date.ToString("yyyy-MM-dd")}";
             if (!string.IsNullOrEmpty(Camera))

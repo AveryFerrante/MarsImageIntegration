@@ -15,47 +15,61 @@ namespace ImageIntegration.ConsoleUI
 {
     class Program
     {
+        private static ServiceProvider _serviceProvider;
         static async Task Main(string[] args)
         {
-            var serviceProvider = BuildServiceProvider();
-            var request = new GetByEarthDateRequest
+            InitializeServiceProvider();
+            var orchestrator = GetOrchestrator();
+            Console.WriteLine("Please specify the directory (on the Desktop) to save images to: ");
+            var directory = Console.ReadLine();
+
+            Console.WriteLine("Begin Procecssing...");
+            var dates = GetDatesFromFile("dates.txt");
+            foreach (var date in dates)
             {
-                Date = new DateTime(2015, 6, 3)
-            };
-            var images = await GetImages(request);
-            await SaveImages(images, serviceProvider);
-
-        }
-
-        private async static Task<IEnumerable<Image>> GetImages(GetByEarthDateRequest request)
-        {
-            var imageRetriever = new MarsImageRetriever();
-            return await imageRetriever.GetImagesAsync(request);
-        }
-
-        private async static Task SaveImages(IEnumerable<Image> images, ServiceProvider services)
-        {
-            var imageSaver = services.GetService<IDiskPersistor>();
-            var saveDirectory = GetDirectory();
-            await imageSaver.PersistImagesAsync(new PersistImagesRequest { Images = images, Directory = saveDirectory });
-        }
-
-        private static string GetDirectory()
-        {
-            var saveDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MarsImages");
-            if (!Directory.Exists(saveDirectory))
-            {
-                Directory.CreateDirectory(saveDirectory);
+                await orchestrator.DownloadImagesAsync(date, directory);
             }
-            return saveDirectory;
+            Console.WriteLine("Finished Processing.");
         }
 
-        private static ServiceProvider BuildServiceProvider()
+        private static IEnumerable<DateTime> GetDatesFromFile(string fileName)
         {
-            var serviceProvider = new ServiceCollection()
+            var dates = new List<DateTime>();
+            using (FileStream fileStream = File.OpenRead(fileName))
+            {
+                using (StreamReader sr = new StreamReader(fileStream))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        DateTime date = default;
+                        var dateString = sr.ReadLine();
+                        if (DateTime.TryParse(dateString, out date))
+                        {
+                            dates.Add(date);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Unable to process {dateString}. It will be skipped.");
+                        }
+                    }
+                }
+            }
+            return dates;
+        }
+
+        private static void InitializeServiceProvider()
+        {
+            _serviceProvider = new ServiceCollection()
                 .AddInfrastructure()
-                .AddServices();
-            return serviceProvider.BuildServiceProvider();
+                .AddServices()
+                .BuildServiceProvider();
+        }
+
+        private static ImageDownloadOrchestrator GetOrchestrator()
+        {
+            var retriever = _serviceProvider.GetService<IApiImageRetriever>();
+            var persistor = _serviceProvider.GetService<IDiskPersistor>();
+            return new ImageDownloadOrchestrator(retriever, persistor);
         }
     }
 }
