@@ -20,7 +20,7 @@ namespace ImageIntegration.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddServices();
+            services.AddNasaService();
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(builder =>

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { GetImagesRequest } from '../common/models/getImagesRequest';
-import { GetImagesResponse } from '../common/models/getImagesResponse';
+import { GetImagesResponse, Photo } from '../common/models/getImagesResponse';
 import { ImagesService } from '../services/images.service';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { Subject, ReplaySubject } from 'rxjs';
+import { tap, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-mars-images-viewer',
@@ -13,8 +14,8 @@ export class MarsImagesViewerComponent implements OnInit {
 
   selectedDate: Date;
   isLoading = false;
-  imageData: SafeUrl;
-  constructor(private imagesService: ImagesService, private sanitizer: DomSanitizer) { }
+  images$ = new ReplaySubject<Photo[]>(1);
+  constructor(private imagesService: ImagesService) { }
 
   ngOnInit() {
   }
@@ -22,16 +23,11 @@ export class MarsImagesViewerComponent implements OnInit {
   onGetImages() {
     const request: GetImagesRequest = { date: this.selectedDate };
     this.isLoading = true;
-    this.imagesService.getImages(request).subscribe(
-      (value: GetImagesResponse[]) => {
-        //const reader = new FileReader();
-        //reader.onload = (e) => this.imageData = e.target.result as ArrayBuffer;
-        //reader.readAsDataURL(new Blob([value[0].data]));
-        let objectUrl = `data:image/${value[0].extention.value.toLowerCase()};base64,` + value[0].data;
-        this.imageData = this.sanitizer.bypassSecurityTrustUrl(objectUrl);
-        this.isLoading = false;
-      }
-    );
+    this.imagesService.getImages(request).pipe(
+      map((response: GetImagesResponse) => response.photos),
+      tap((photos: Photo[]) => this.images$.next(photos)),
+      tap(() => this.isLoading = false)
+    ).subscribe();
   }
 
   onDateInput(dateString: string) {

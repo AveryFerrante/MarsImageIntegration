@@ -5,11 +5,13 @@ import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { MarsImagesViewerComponent } from './mars-images-viewer/mars-images-viewer.component';
+import { ImageCardComponent } from './image-card/image-card.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MarsImagesViewerComponent
+    MarsImagesViewerComponent,
+    ImageCardComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

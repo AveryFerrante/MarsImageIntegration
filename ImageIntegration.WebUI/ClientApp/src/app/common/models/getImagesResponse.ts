@@ -1,9 +1,36 @@
-export interface GetImagesResponse {
+interface Camera {
+  id: number;
   name: string;
-  data: Uint8Array;
-  extention: ImageFileExtention;
+  rover_id: number;
+  full_name: string;
 }
 
-interface ImageFileExtention {
-  value: string;
+interface RoverCamera {
+  name: string;
+  full_name: string;
+}
+
+interface Rover {
+  id: number;
+  name: string;
+  landing_date: string;
+  launch_date: string;
+  status: string;
+  max_sol: number;
+  max_date: string;
+  total_photos: number;
+  cameras: RoverCamera[];
+}
+
+export interface Photo {
+  id: number;
+  sol: number;
+  camera: Camera;
+  img_src: string;
+  earth_date: string;
+  rover: Rover;
+}
+
+export interface GetImagesResponse {
+  photos: Photo[];
 }

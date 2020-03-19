@@ -11,7 +11,7 @@ export class ImagesService {
   constructor(private http: HttpClient) { }
 
   getImages(request: GetImagesRequest) {
-    return this.http.get<GetImagesResponse[]>(this.buildRequestString(request));
+    return this.http.get<GetImagesResponse>(this.buildRequestString(request));
   }
 
   private buildRequestString(request: GetImagesRequest) {

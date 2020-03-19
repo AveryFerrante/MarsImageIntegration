@@ -10,7 +10,7 @@ namespace ImageIntegration.Services.NasaApi.Models
         public string full_name { get; set; }
     }
 
-    public class Camera2
+    public class RoverCamera
     {
         public string name { get; set; }
         public string full_name { get; set; }
@@ -26,7 +26,7 @@ namespace ImageIntegration.Services.NasaApi.Models
         public int max_sol { get; set; }
         public string max_date { get; set; }
         public int total_photos { get; set; }
-        public List<Camera2> cameras { get; set; }
+        public List<RoverCamera> cameras { get; set; }
     }
 
     public class Photo

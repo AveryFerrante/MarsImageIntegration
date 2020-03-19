@@ -1,0 +1,14 @@
+<div class="card">
+  <img class="card-img-top" [src]="photo.img_src" alt="Mars Image">
+  <div class="card-body">
+    <!--<h5 class="card-title">Card title</h5>-->
+    <div class="card-text">
+      <h5 class="card-title">Image Info:</h5>
+      <ul>
+        <li>Rover Name: {{ photo.rover.name }}</li>
+        <li>Camera Name: {{ photo.camera.name }}</li>
+        <li>Martian Sol: {{ photo.sol }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
