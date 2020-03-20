@@ -6,6 +6,6 @@ namespace ImageIntegration.Services.NasaApi.Interfaces
 {
     public interface INasaApiImageRetriever
     {
-        Task<GetByEarthDateResponse> GetImagesAsync(BaseGetRequest request);
+        Task<GetByEarthDateResponse> GetImagesAsync(GetByEarthDateRequest request);
     }
 }

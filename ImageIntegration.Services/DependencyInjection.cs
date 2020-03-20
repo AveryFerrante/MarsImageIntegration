@@ -1,6 +1,7 @@
 ﻿using ImageIntegration.Application.Common.Interfaces;
 using ImageIntegration.Services.NasaApi;
 using ImageIntegration.Services.NasaApi.Interfaces;
+using ImageIntegration.Services.NasaApi.Models;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ImageIntegration.Services
@@ -10,7 +11,7 @@ namespace ImageIntegration.Services
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services
-                .AddSingleton<IApiImageRetriever, MarsImageRetriever>()
+                .AddSingleton<IImageRetriever<GetByEarthDateRequest>, MarsImageRetriever>()
                 .AddNasaService();
             return services;
         }

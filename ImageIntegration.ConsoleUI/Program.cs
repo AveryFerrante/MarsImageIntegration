@@ -67,7 +67,7 @@ namespace ImageIntegration.ConsoleUI
 
         private static ImageDownloadOrchestrator GetOrchestrator()
         {
-            var retriever = _serviceProvider.GetService<IApiImageRetriever>();
+            var retriever = _serviceProvider.GetService<IImageRetriever<GetByEarthDateRequest>>();
             var persistor = _serviceProvider.GetService<IDiskPersistor>();
             return new ImageDownloadOrchestrator(retriever, persistor);
         }

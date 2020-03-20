@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ImageIntegration.Services.NasaApi
 {
-    public class MarsImageRetriever : IApiImageRetriever
+    public class MarsImageRetriever : IImageRetriever<GetByEarthDateRequest>
     {
         private INasaApiImageRetriever _nasaImageRetriever;
         public MarsImageRetriever(INasaApiImageRetriever nasaImageRetriever)
@@ -19,7 +19,7 @@ namespace ImageIntegration.Services.NasaApi
             _nasaImageRetriever = nasaImageRetriever;
         }
 
-        public async Task<IEnumerable<Image>> GetImagesAsync(BaseGetRequest request)
+        public async Task<IEnumerable<Image>> GetImagesAsync(GetByEarthDateRequest request)
         {
             var apiResponse = await _nasaImageRetriever.GetImagesAsync(request);
             return await ConvertToImages(apiResponse);
@@ -33,7 +33,7 @@ namespace ImageIntegration.Services.NasaApi
 
         private async Task<Image> FetchImage(Photo photo)
         {
-            using (WebClient webClient = new WebClient())
+            using (var webClient = new WebClient())
             {
                 var imageData = await webClient.DownloadDataTaskAsync(new Uri(photo.img_src));
                 return new Image
@@ -41,7 +41,7 @@ namespace ImageIntegration.Services.NasaApi
                     Data = imageData,
                     Name = photo.id.ToString(),
                     Extention = ImageFileExtension.From(photo.img_src.Split('.').Last())
-                };
+                }; 
             }
         }
     }

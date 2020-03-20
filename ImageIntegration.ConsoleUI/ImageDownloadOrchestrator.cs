@@ -11,9 +11,9 @@ namespace ImageIntegration.ConsoleUI
 {
     public class ImageDownloadOrchestrator
     {
-        private IApiImageRetriever _imageRetriever { get; set; }
+        private IImageRetriever<GetByEarthDateRequest> _imageRetriever { get; set; }
         private IDiskPersistor _diskPersistor { get; set; }
-        public ImageDownloadOrchestrator(IApiImageRetriever imageRetriever, IDiskPersistor diskPersistor)
+        public ImageDownloadOrchestrator(IImageRetriever<GetByEarthDateRequest> imageRetriever, IDiskPersistor diskPersistor)
         {
             _imageRetriever = imageRetriever;
             _diskPersistor = diskPersistor;

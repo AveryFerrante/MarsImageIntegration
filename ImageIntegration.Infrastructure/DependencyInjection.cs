@@ -1,6 +1,7 @@
 ﻿using ImageIntegration.Application.Common.Interfaces;
 using ImageIntegration.Infrastructure.LocalDiskPersistance;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net;
 
 namespace ImageIntegration.Infrastructure
 {
