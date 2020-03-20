@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="Moq" Version="4.13.1" />
     <PackageReference Include="xunit" Version="2.4.0" />
@@ -15,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ImageIntegration.Api\ImageIntegration.Api.csproj" />
     <ProjectReference Include="..\ImageIntegration.Application\ImageIntegration.Application.csproj" />
     <ProjectReference Include="..\ImageIntegration.Services\ImageIntegration.Services.csproj" />
   </ItemGroup>

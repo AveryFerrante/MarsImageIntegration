@@ -12,6 +12,7 @@ namespace ImageIntegration.Services
         {
             services
                 .AddSingleton<IImageRetriever<GetByEarthDateRequest>, MarsImageRetriever>()
+                .AddSingleton<IImageDownloader, ImageDownloader>()
                 .AddNasaService();
             return services;
         }

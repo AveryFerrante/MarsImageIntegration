@@ -15,6 +15,7 @@ export class MarsImagesViewerComponent implements OnInit {
   selectedDate: Date;
   isLoading = false;
   images$ = new ReplaySubject<Photo[]>(1);
+  imageResultCount: number;
   constructor(private imagesService: ImagesService) { }
 
   ngOnInit() {
@@ -25,6 +26,7 @@ export class MarsImagesViewerComponent implements OnInit {
     this.isLoading = true;
     this.imagesService.getImages(request).pipe(
       map((response: GetImagesResponse) => response.photos),
+      tap((photos) => this.imageResultCount = photos.length),
       tap((photos: Photo[]) => this.images$.next(photos)),
       tap(() => this.isLoading = false)
     ).subscribe();

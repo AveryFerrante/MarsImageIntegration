@@ -34,7 +34,7 @@ namespace ImageIntegration.Services.NasaApi
 
         private string GetQueryString(GetByEarthDateRequest request)
         {
-            var queryString = $"earth_date={request.Date.ToString("yyyy-MM-dd")}";
+            var queryString = $"earth_date={request.Date.Value.ToString("yyyy-MM-dd")}";
             if (!string.IsNullOrEmpty(request.Camera))
             {
                 queryString += $"&camera={request.Camera}";

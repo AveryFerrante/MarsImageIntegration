@@ -12,7 +12,13 @@
   </div>
 
   <div *ngIf="!isLoading; else currentlyLoading" class="row mt-5">
-    <app-image-card *ngFor="let photo of (images$ | async)" [photo]="photo" class="col-4 mb-2"></app-image-card>
+    <ng-container *ngIf="imageResultCount > 0; else noResults">
+      <app-image-card *ngFor="let photo of (images$ | async)" [photo]="photo" class="col-4 mb-2"></app-image-card>
+    </ng-container>
+
+    <ng-template #noResults>
+      <h3 class="col-12 text-center mt-5">No Results</h3>
+    </ng-template>
   </div>
 
   <ng-template #currentlyLoading>

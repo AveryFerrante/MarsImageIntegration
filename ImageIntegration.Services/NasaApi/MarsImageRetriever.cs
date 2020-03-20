@@ -14,9 +14,11 @@ namespace ImageIntegration.Services.NasaApi
     public class MarsImageRetriever : IImageRetriever<GetByEarthDateRequest>
     {
         private INasaApiImageRetriever _nasaImageRetriever;
-        public MarsImageRetriever(INasaApiImageRetriever nasaImageRetriever)
+        private IImageDownloader _imageDownloader;
+        public MarsImageRetriever(INasaApiImageRetriever nasaImageRetriever, IImageDownloader imageDownloader)
         {
             _nasaImageRetriever = nasaImageRetriever;
+            _imageDownloader = imageDownloader;
         }
 
         public async Task<IEnumerable<Image>> GetImagesAsync(GetByEarthDateRequest request)
@@ -27,22 +29,13 @@ namespace ImageIntegration.Services.NasaApi
 
         private async Task<IEnumerable<Image>> ConvertToImages(GetByEarthDateResponse resposne)
         {
-            var convertToImageTasks = resposne.photos.Select(photo => FetchImage(photo));
+            var convertToImageTasks = resposne.photos.Select(async photo => new Image
+            { 
+                Data = await _imageDownloader.FetchImage(new Uri(photo.img_src)),
+                Name = photo.id.ToString(),
+                Extention = ImageFileExtension.From(photo.img_src.Split('.').Last())
+            });
             return await Task.WhenAll(convertToImageTasks);
-        }
-
-        private async Task<Image> FetchImage(Photo photo)
-        {
-            using (var webClient = new WebClient())
-            {
-                var imageData = await webClient.DownloadDataTaskAsync(new Uri(photo.img_src));
-                return new Image
-                {
-                    Data = imageData,
-                    Name = photo.id.ToString(),
-                    Extention = ImageFileExtension.From(photo.img_src.Split('.').Last())
-                }; 
-            }
         }
     }
 }

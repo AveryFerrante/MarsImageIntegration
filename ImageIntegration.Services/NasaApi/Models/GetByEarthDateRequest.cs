@@ -7,7 +7,7 @@ namespace ImageIntegration.Services.NasaApi.Models
     public class GetByEarthDateRequest
     {
         [Required]
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
         public string Camera { get; set; }
     }
 }

@@ -6,7 +6,9 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 using Xunit;
+using System.Linq;
 
 namespace ImageIntegration.IntegrationTests
 {
@@ -15,32 +17,36 @@ namespace ImageIntegration.IntegrationTests
         [Fact]
         public async void GetImages_WithValidRequest_ReturnsResults()
         {
-            var imageRetriever = GetImageRetriever();
-            var request = new GetByEarthDateRequest { Date = new DateTime(2015, 6, 3) };
+            var expected = 5;
+            var imageRetriever = GetMockImageRetrieverThatReturnsXResults(5);
+            var request = new GetByEarthDateRequest { Date = new DateTime() };
 
             var response = await imageRetriever.GetImagesAsync(request);
 
-            Assert.NotEmpty(response);
+            Assert.Equal(expected, response.Count());
         }
 
-        [Fact]
-        public async void GetImages_WithInvalidRequest_ReturnsNoResults()
+        private IImageRetriever<GetByEarthDateRequest> GetMockImageRetrieverThatReturnsXResults(int x)
         {
-            var imageRetriever = GetImageRetriever();
-            var request = new GetByEarthDateRequest { Date = DateTime.MaxValue };
+            Mock<INasaApiImageRetriever> mockApiRetriever = GetMockApiImageRetrieverThatReturnsXResults(x);
 
-            var response = await imageRetriever.GetImagesAsync(request);
+            var mockImageDownloader = new Mock<IImageDownloader>();
+            mockImageDownloader.Setup(d => d.FetchImage(It.IsAny<Uri>()))
+                .Returns(Task.FromResult(new byte[0]));
 
-            Assert.Empty(response);
+            return new MarsImageRetriever(mockApiRetriever.Object, mockImageDownloader.Object);
         }
 
-        private IImageRetriever<GetByEarthDateRequest> GetImageRetriever()
+        private static Mock<INasaApiImageRetriever> GetMockApiImageRetrieverThatReturnsXResults(int x)
         {
-            var mockedApiRetriever = new Mock<INasaApiImageRetriever>();
-            var a = new Mock<WebClient>();
-            a.Setup(wc => wc.DownloadDataTaskAsync(It.IsAny<string>()));
-            mockedApiRetriever.Setup(o => o.GetImagesAsync(It.IsAny<GetByEarthDateRequest>()));
-            return new MarsImageRetriever(mockedApiRetriever.Object);
+            var mockPhotoData = new List<Photo>();
+            Enumerable.Range(0, x).ToList().ForEach((i) => mockPhotoData.Add(new Photo { img_src = "http://wwww.placeholder.com/placeholder.jpg", id = i }));
+            var mockApiRetriever = new Mock<INasaApiImageRetriever>();
+
+            mockApiRetriever.Setup(o => o.GetImagesAsync(It.IsAny<GetByEarthDateRequest>()))
+                .Returns(Task.FromResult(new GetByEarthDateResponse { photos = mockPhotoData }));
+
+            return mockApiRetriever;
         }
     }
 }

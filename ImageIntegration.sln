@@ -25,6 +25,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageIntegration.UnitTests"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageIntegration.IntegrationTests", "ImageIntegration.IntegrationTests\ImageIntegration.IntegrationTests.csproj", "{672337F2-B2FB-43E9-AABA-B92AFE79248B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{C6BEE83E-9CDF-4C1D-ADA9-65DF3D5C208C}"
+	ProjectSection(SolutionItems) = preProject
+		Readme.md = Readme.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
